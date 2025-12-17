@@ -1,11 +1,7 @@
 from bot.common.types.ids import MarketInformation, EventInformation, TradeableMarket
 from bot.common.messages.gamma import GammaMarket, Event
 
-from dataclasses import fields
-
 def parse_market(market: GammaMarket) -> MarketInformation:
-    validate_required_fields(market, MarketInformation)
-
     return MarketInformation(
         id=market.id,
         question_id=market.question_id,
@@ -22,8 +18,6 @@ def parse_market(market: GammaMarket) -> MarketInformation:
     )
 
 def parse_event(event: Event) -> EventInformation:
-    validate_required_fields(event, EventInformation)
-
     return EventInformation(
         id=event.id,
         ticker=event.ticker,
@@ -48,13 +42,3 @@ def to_tradeable_market(market: MarketInformation, tradeable_events: list[EventI
         tradeable_market_id=market.id,
         tradeable_events=[e.id for e in tradeable_events],
     )
-
-def validate_required_fields(source, target_cls):
-    missing = []
-    for f in fields(target_cls):
-        if getattr(source, f.name) is None:
-            missing.append(f.name)
-
-    if missing:
-        raise ValueError(f"Missing required fields: {missing}")
-
