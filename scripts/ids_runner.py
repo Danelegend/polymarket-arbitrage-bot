@@ -3,7 +3,6 @@ from bot.ids.orchestration import handle_market
 
 def run():
     for market in get_markets():
-        print(market)
         handle_market(market)
 
 
