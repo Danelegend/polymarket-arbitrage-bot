@@ -27,7 +27,7 @@ def get_raw_markets_from_url(url: str) -> list[dict]:
 
 def _get_markets(limit: int, offset: int) -> list[GammaMarket]:
     url = build_markets_endpoint(limit, offset)
-    markets = get_raw_market_from_url(url)
+    markets = get_raw_markets_from_url(url)
     return [GammaMarket(**market) for market in markets]
 
 def get_markets() -> Generator[GammaMarket, None, None]:
