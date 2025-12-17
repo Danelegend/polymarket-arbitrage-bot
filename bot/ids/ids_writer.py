@@ -5,12 +5,19 @@ from .serialiser import serialise_market, serialise_tradeable_market
 
 class FileWriter:
     def __init__(self, file_path: str):
-        self.file = open(file_path, 'w')
+        self.file_path = file_path
+        self.file = None
 
-    def write(self, market: MarketInformation):
-        self.file.write(market.json() + "\n")
+        open(self.file_path, "w").close()
 
-    def close(self):
+    def __enter__(self):
+        self.file = open(self.file_path, "a")
+        return self
+
+    def write(self, data: str):
+        self.file.write(data + "\n")
+
+    def __exit__(self, exc_type, exc, tb):
         self.file.close()
 
 MARKET_FILE_WRITER = FileWriter(MARKET_OUTPUT_FILE)
