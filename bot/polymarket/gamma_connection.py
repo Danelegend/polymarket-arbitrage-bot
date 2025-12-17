@@ -6,7 +6,7 @@ import requests
 
 from typing import Generator
 
-from common.messages.gamma import GammaMarket
+from bot.common.messages.gamma import GammaMarket
 
 GAMMA_API = "https://gamma-api.polymarket.com"
 
