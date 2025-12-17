@@ -25,7 +25,6 @@ TRADABLE_MARKETS_FILE_WRITER = FileWriter(TRADABLE_MARKETS_OUTPUT_FILE)
 
 def write_market(market: MarketInformation):
     with MARKET_FILE_WRITER as writer:
-        print("Writing: ")
         writer.write(
             serialise_market(market)
         )
