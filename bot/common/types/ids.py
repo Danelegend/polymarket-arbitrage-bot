@@ -43,7 +43,7 @@ class MarketInformation(BaseModel):
     active: bool
     new: bool
 
-    volume: str
+    volume: float
 
     events: list[EventInformation]
 

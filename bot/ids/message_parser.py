@@ -13,7 +13,7 @@ def parse_market(market: GammaMarket) -> MarketInformation:
         creation_date=market.created_at,
         active=market.active,
         new=market.new or False,
-        volume=market.volume or 0,
+        volume=float(market.volume) or 0,
         events=[parse_event(e) for e in market.events],
     )
 
