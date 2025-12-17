@@ -39,6 +39,8 @@ def get_markets() -> Generator[GammaMarket, None, None]:
 
         yield from markets
 
+        print(offset, len(markets), markets[0]["id"])
+
         if len(markets) != limit:
             break
         
