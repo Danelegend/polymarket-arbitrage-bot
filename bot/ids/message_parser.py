@@ -2,6 +2,7 @@ from bot.common.types.ids import MarketInformation, EventInformation, TradeableM
 from bot.common.messages.gamma import GammaMarket, Event
 
 def parse_market(market: GammaMarket) -> MarketInformation:
+    print(market)
     return MarketInformation(
         id=market.id,
         question_id=market.question_id,
