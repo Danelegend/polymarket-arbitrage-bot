@@ -14,7 +14,7 @@ def _build_markets_endpoint(limit: int, offset: int, **kwargs) -> str:
     """Builds the markets endpoint URL with the given parameters."""
     base_url = f"{GAMMA_API}/markets"
 
-    return f"{base_url}?limit={limit}&offset={offset}{f'&{key}={value}' for key, value in kwargs.items()}"
+    return f"{base_url}?limit={limit}&offset={offset}"
 
 def build_markets_endpoint(limit: int, offset: int) -> str:
     return _build_markets_endpoint(limit, offset)
