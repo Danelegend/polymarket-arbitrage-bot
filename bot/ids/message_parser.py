@@ -7,7 +7,7 @@ def parse_market(market: GammaMarket) -> MarketInformation:
         question_id=market.question_id,
         slug=market.slug,
         question=market.question,
-        category=market.category,
+        category=market.category or "",
         start_date=market.start_date,
         end_date=market.end_date,
         creation_date=market.created_at,
