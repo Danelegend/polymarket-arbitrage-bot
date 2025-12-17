@@ -35,6 +35,7 @@ def get_markets() -> Generator[GammaMarket, None, None]:
     offset = 0
 
     while True:
+        print("Getting markets ", limit, " ", offset)
         markets = _get_markets(limit, offset)
 
         yield from markets
