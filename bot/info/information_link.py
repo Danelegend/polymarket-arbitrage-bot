@@ -1,0 +1,82 @@
+from bot.polymarket.ws_connection import PolyMarketWebSocketConnection
+from collections import defaultdict
+
+from bot.polymarket.market_data_interface import MarketDataHandlerInterface
+from bot.common.messages.websocket import (
+    OrderBookSummaryEvent,
+    PriceChangeEvent,
+    TickSizeChangeEvent,
+    LastTradePriceEvent,
+)
+from bot.ids.ids_interface import IdsInterface
+
+from .information_link_interfaces import DataConsumer, DataProvider
+
+class InfoLink(DataProvider, MarketDataHandlerInterface):
+    def __init__(self, ids_client: IdsInterface):
+        self.ids_client = ids_client
+        
+        # asset_id -> list of subscribers
+        self.subscribers: dict[str, list[DataConsumer]] = defaultdict(list)
+        self.polymarket_connection = PolyMarketWebSocketConnection()
+
+        self.subscribed_markets: set[str] = set()
+
+    def start(self):
+        self.polymarket_connection.run()
+
+    def subscribe_to_data(self, asset_id: str, consumer: DataConsumer):
+        self.subscribers[asset_id].append(consumer)
+
+        self._subscribe_to_market(
+            self.ids_client.get_market_for_event(
+                int(asset_id)
+            )
+        )
+        
+    def _subscribe_to_market(self, market_id: str):
+        if market_id in self.subscribed_markets:
+            return
+
+        self.subscribed_markets.add(market_id)
+        self.polymarket_connection.subscribe_to_market(market_id)
+
+    def handle_order_book_summary_event(self, event: OrderBookSummaryEvent):
+        token_id = event.token_id
+
+        if token_id not in self.subscribers:
+            return
+
+        for consumer in self.subscribers[token_id]:
+            consumer.on_order_book_summary_event(token_id, event)
+
+
+    def handle_price_change_event(self, event: PriceChangeEvent):
+        for pc in event.price_changes:
+            token_id = pc.condition_id
+
+            if token_id not in self.subscribers:
+                continue
+
+            for consumer in self.subscribers[token_id]:
+                consumer.on_price_change_event(token_id, pc)
+
+    def handle_tick_size_change_event(self, event: TickSizeChangeEvent):
+        token_id = event.token_id
+
+        if token_id not in self.subscribers:
+            return
+
+        for consumer in self.subscribers[token_id]:
+            consumer.on_tick_size_change_event(token_id, event)
+
+
+    def handle_last_trade_price_event(self, event: LastTradePriceEvent):
+        token_id = event.token_id
+
+        if token_id not in self.subscribers:
+            return
+
+        for consumer in self.subscribers[token_id]:
+            consumer.on_last_trade_price_event(token_id, event)
+    

@@ -1,6 +1,6 @@
 import re
 from datetime import UTC, datetime
-from typing import Annotated, Any
+from typing import Annotated, Any, Literal
 
 from dateutil import parser
 from hexbytes import HexBytes
@@ -112,7 +112,7 @@ Keccak256 = Annotated[str, AfterValidator(validate_keccak256)]
 HexString = Annotated[str, BeforeValidator(hexbytes_to_str)]
 Keccak256OrPadded = Annotated[str, BeforeValidator(validate_keccak_or_padded)]
 EmptyString = Annotated[str, Field(pattern=r"^$", description="An empty string")]
-
+TickSize = Literal["0.1", "0.01", "0.001", "0.0001"]
 
 class TimeseriesPoint(BaseModel):
     model_config = ConfigDict(populate_by_name=True)

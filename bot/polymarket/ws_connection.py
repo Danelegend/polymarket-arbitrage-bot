@@ -1,0 +1,81 @@
+import json
+
+from .ws_connection_base import ConnectionBase
+from .market_data_interface import MarketDataHandlerInterface
+from bot.common.messages.websocket import (
+    MessageType,
+    OrderBookSummaryEvent,
+    PriceChangeEvent,
+    TickSizeChangeEvent,
+    LastTradePriceEvent,
+)
+
+POLYMARKET_SOCKET_URL = "wss://ws-subscriptions-clob.polymarket.com"
+MARKET_CHANNEL = "market"
+
+
+def build_market_url() -> str:
+    return POLYMARKET_SOCKET_URL + "/ws/" + MARKET_CHANNEL
+
+
+def _process_market_event(handler: MarketDataHandlerInterface, msg: dict):
+    match msg["event_type"]:
+        case MessageType.BOOK.value:
+            handler.handle_order_book_summary_event(
+                OrderBookSummaryEvent(**msg)
+            )
+        case MessageType.PRICE_CHANGE.value:
+            handler.handle_price_change_event(
+                PriceChangeEvent(**msg)
+            )
+        case MessageType.TICK_SIZE_CHANGE.value:
+            handler.handle_tick_size_change_event(
+                TickSizeChangeEvent(**msg)
+            )
+        case MessageType.LAST_TRADE_PRICE.value:
+            handler.handle_last_trade_price_event(
+                LastTradePriceEvent(**msg)
+            )
+        case _:
+            raise ValueError("Invalid event type")
+
+
+def _process_market_events(handler: MarketDataHandlerInterface, msg: dict | list):
+    if isinstance(msg, list):
+        for item in msg:
+            _process_market_event(handler, item)
+    else:
+        _process_market_event(handler, msg)    
+
+
+class PolyMarketWebSocketConnection(ConnectionBase):
+    def __init__(self, handler: MarketDataHandlerInterface):
+        super().__init__(build_market_url())
+
+        self.handler = handler
+        self.subscribed_markets: set[str] = set()
+
+    def subscribe_to_market(self, token_id: str):
+        if token_id in self.subscribed_markets:
+            return
+
+        self.subscribed_markets.add(token_id)
+
+    def on_message(self, ws, message):
+        _process_market_event(
+            self.handler,
+            json.loads(message),
+        )
+
+    def on_error(self, ws, error):
+        return
+
+    def on_close(self, ws, close_status_code, close_msg):
+        return
+
+    def on_open(self, ws):
+        data = {
+            "assets_ids": list(self.subscribed_markets),
+            "type": MARKET_CHANNEL,
+        }
+        self.send_message(data)
