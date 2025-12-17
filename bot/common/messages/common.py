@@ -1,11 +1,12 @@
 import re
-from datetime import UTC, datetime
+from datetime import timezone, datetime
 from typing import Annotated, Any, Literal
 
 from dateutil import parser
 from hexbytes import HexBytes
 from pydantic import AfterValidator, BaseModel, BeforeValidator, ConfigDict, Field
 
+UTC = timezone.utc
 
 def parse_flexible_datetime(v: str | datetime) -> datetime:
     """Parse datetime from multiple formats using dateutil."""
