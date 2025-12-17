@@ -8,6 +8,14 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def save_market(gamma_market: GammaMarket):
+    # Save the market to a file
+    try:
+        write_market(parse_market(gamma_market))
+    except Exception as e:
+        logger.info(f"Failed to parse market, title={gamma_market.question} e={e}")
+        return
+
 def handle_market(gamma_market: GammaMarket):
     # Save the market to a file
     try:

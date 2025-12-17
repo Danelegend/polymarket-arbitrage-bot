@@ -29,9 +29,9 @@ def parse_event(event: Event) -> EventInformation:
         creation_date=event.created_at,
         active=event.active,
         new=event.new or False,
-        volume_1mo=event.volume_1mo,
-        volume_1wk=event.volume_1wk,
-        volume_24hr=event.volume_24hr,
+        volume_1mo=event.volume_1mo or 0,
+        volume_1wk=event.volume_1wk or 0,
+        volume_24hr=event.volume_24hr or 0,
     )
 
 def to_tradeable_market(market: MarketInformation) -> TradeableMarket:
