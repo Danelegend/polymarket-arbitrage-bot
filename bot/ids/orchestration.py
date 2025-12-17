@@ -17,10 +17,10 @@ def handle_market(gamma_market: GammaMarket):
         return
 
     # Check what markets and events are valid
-    market_valid = market_valid(gamma_market)
+    is_market_valid = market_valid(gamma_market)
     
     # If the market is not valid, we do not trade any events
-    if not market_valid:
+    if not is_market_valid:
         return
 
     valid_events = [
