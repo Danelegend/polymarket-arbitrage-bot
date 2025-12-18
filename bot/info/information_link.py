@@ -59,7 +59,7 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
                 continue
 
             for consumer in self.subscribers[token_id]:
-                consumer.on_price_change_event(token_id, pc)
+                consumer.on_price_change_event(token_id, pc, event.timestamp)
 
     def handle_tick_size_change_event(self, event: TickSizeChangeEvent):
         token_id = event.token_id

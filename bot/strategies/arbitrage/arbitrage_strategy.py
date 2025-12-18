@@ -1,9 +1,7 @@
 from decimal import Decimal
-from bot.orderbook import (
-    OrderBookConsumer,
-    OrderBookFanoutInterface,
-    OrderBook
-)
+
+from bot.strategies.strategy import Strategy
+from bot.orderbook import OrderBook
 
 from enum import Enum
 
@@ -16,29 +14,21 @@ class Side(Enum):
     SELL = "sell"
 
 
-class ArbitrageStrategy(OrderBookConsumer):
+class ArbitrageStrategy(Strategy):
     def __init__(
         self, 
-        asset_ids: list[str],
-        orderbook_fanout: OrderBookFanoutInterface,    
+        asset_ids: list[str],  
     ):
-        self.assets = asset_id
+        self.assets = asset_ids
         self.asset_order_books: dict[str, OrderBook] = {}
 
-        for asset_id in asset_ids:
-            orderbook_fanout.subscribe_to_order_book(asset_id, self)
-
-
-    def on_order_book_update(
-        self,
-        asset_id: str,
-        order_book: OrderBook,
-    ):
+    def run(self, asset_id: str, order_book: OrderBook):
         self.asset_order_books[asset_id] = order_book
 
         if not self._can_run_strategy():
             return
 
+        self._run_strategy()
 
     def _can_run_strategy(self) -> bool:
         # Check that we have an order book for each asset

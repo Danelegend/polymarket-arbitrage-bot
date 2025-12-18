@@ -3,6 +3,8 @@ from bot.ids.orchestration import save_market
 
 import logging
 
+from dataclasses import dataclass
+
 logging.basicConfig(
     filename="ids_runner.log",
     filemode="w",
@@ -11,9 +13,14 @@ logging.basicConfig(
 )
 
 def run():
+    # Goal of this script is to populate what markets are tradable
+    
+    # We want to find arb markets that:
+    # -> End by Feb 1st 2026
+    # -> Have a yes and no market
+    # -> 
+
     for market in get_markets():
-        if len(market.events) >= 2:
-            print("More than 2 events")
         save_market(market)
 
 

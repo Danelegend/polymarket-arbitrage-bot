@@ -12,7 +12,7 @@ class DataConsumer(Protocol):
     def on_order_book_summary_event(self, token_id: str, event: OrderBookSummary):
         ...
 
-    def on_price_change_event(self, token_id: str, event: PriceChange):
+    def on_price_change_event(self, token_id: str, event: PriceChange, timestamp: int):
         ...
 
     def on_tick_size_change_event(self, token_id: str, event: TickSizeChange):
