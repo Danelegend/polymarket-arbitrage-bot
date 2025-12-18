@@ -30,7 +30,6 @@ class ArbitrageStrategy(Strategy):
         self.asset_order_books[asset_id] = order_book
 
         if not self._can_run_strategy():
-            logger.info("No run strat")
             return
 
         self._run_strategy()
@@ -39,7 +38,6 @@ class ArbitrageStrategy(Strategy):
         return self.assets.values()
 
     def _can_run_strategy(self) -> bool:
-        logger.info(f"assets={self.assets}, order_books={self.asset_order_books}")
         # Check that we have an order book for each asset
         return len(self.assets) == len(self.asset_order_books)
 
@@ -52,7 +50,7 @@ class ArbitrageStrategy(Strategy):
         if check_for_arb(Side.SELL, order_books):
             logger.info(f"SELL ARBITRAGE for {self.assets.keys()}")
 
-        string_builder1 = f"Market={self.assets.values()[0].market_name}"
+        string_builder1 = f"Market={next(iter(self.assets.values())).market_name}"
         string_builder2 = string_builder1
 
         for asset_id, orderbook in self.asset_order_books.items():
