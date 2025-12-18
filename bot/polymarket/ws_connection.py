@@ -11,6 +11,7 @@ from bot.common.messages.websocket import (
 )
 
 import logging
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -66,10 +67,13 @@ class PolyMarketWebSocketConnection(ConnectionBase):
         self.subscribed_markets.add(token_id)
 
     def on_message(self, ws, message):
-        _process_market_event(
-            self.handler,
-            json.loads(message),
-        )
+        try:
+            _process_market_event(
+                self.handler,
+                json.loads(message),
+            )
+        except Exception:
+            logger.error(traceback.format_exc())
 
     def on_error(self, ws, error):
         return
