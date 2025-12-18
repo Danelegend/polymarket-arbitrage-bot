@@ -10,6 +10,10 @@ from bot.common.messages.gamma import GammaMarket
 
 GAMMA_API = "https://gamma-api.polymarket.com"
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 def _build_markets_endpoint(limit: int, offset: int, **kwargs) -> str:
     """Builds the markets endpoint URL with the given parameters."""
     base_url = f"{GAMMA_API}/markets"
@@ -30,7 +34,7 @@ def _get_markets(limit: int, offset: int) -> list[GammaMarket]:
     markets = get_raw_markets_from_url(url)
 
     for market in markets:
-        print(market)
+        logger.info(market)
         events = market.get("events", [])
 
         if len(events) >= 2:
