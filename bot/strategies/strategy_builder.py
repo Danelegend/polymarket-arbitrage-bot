@@ -12,7 +12,7 @@ def build_arbitrage_strategy(market: MarketInformation):
     asset_identifiers = []
     
     for i in range(0, len(market.outcomes)):
-        asset_id = market.asset_ids[i]
+        asset_id = market.token_ids[i]
         outcome = market.outcomes[i]
 
         asset_identifiers.append(
