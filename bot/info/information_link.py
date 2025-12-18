@@ -35,9 +35,7 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
         self.subscribers[asset_id].append(consumer)
 
         self._subscribe_to_market(
-            self.ids_client.get_market_for_event(
-                asset_id
-            )
+            asset_id
         )
         
     def _subscribe_to_market(self, market_id: int):
