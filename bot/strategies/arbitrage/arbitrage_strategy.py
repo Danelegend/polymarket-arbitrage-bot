@@ -68,33 +68,30 @@ class ArbitrageStrategy(Strategy):
 
 
 def check_for_arb(side: Side, order_books: list[OrderBook]):
-    best_top_levels: list[Decimal] = []
+    spread = spread_cost(side, order_books)
 
-    for orderbook in order_books:
-        match side:
-            case Side.BUY:
-                best_ask = orderbook.get_best_ask()
-
-                if best_ask is None:
-                    return False
-
-                best_top_levels.append(Decimal(best_ask))
-            case Side.SELL:
-                best_bid = orderbook.get_best_bid()
-
-                if best_bid is None:
-                    return False
-
-                best_top_levels.append(Decimal(best_bid))
-
-    total = get_top_level_sum(best_top_levels)
-
-    return total - 1 < 0 if side == Side.BUY else total - 1 > 0
-
-
-def get_top_level_sum(best_top_levels: list[Decimal]) -> Decimal:
-    return Decimal(sum(best_top_levels))
+    return spread < 1 if side ==  Side.BUY else spread > 1
 
 
 def get_market_name(assets: dict[str, AssetIdentifier]) -> str:
     return next(iter(assets.values())).market_name
+
+def spread_cost(side: Side, orderbooks: list[OrderBook]) -> Decimal:
+    total = Decimal(0)
+    
+    for orderbook in orderbooks:
+        match side:
+            case Side.BUY:
+                ask = orderbook.get_best_ask()
+
+                if ask is None: return Decimal('Infinity')
+                
+                total += Decimal(ask)
+            case Side.SELL:
+                buy = orderbook.get_best_bid()
+
+                if buy is None: return Decimal('-Infinity')
+                
+                total += Decimal(buy)
+    
+    return total
