@@ -47,11 +47,9 @@ class Channel(DataConsumer):
             self.subscribe_to_instrument_updates(asset_id)
 
     def subscribe_to_instrument_updates(self, asset_id: str):
-        logger.info(f"Subscribing to asset={asset_id}")
         self.data_provider.subscribe_to_data(asset_id, self)
 
     def on_order_book_summary_event(self, asset_id: str, event: OrderBookSummary):
-        logger.debug("Channel got order book summary event")
         orderbook = self.orderbook_manager.get_order_book(asset_id)
 
         if orderbook is None:
@@ -67,7 +65,6 @@ class Channel(DataConsumer):
         self._on_orderbook_update(asset_id, orderbook)
 
     def on_price_change_event(self, asset_id: str, event: PriceChange, timestamp: int):
-        logger.debug("Channel got price change event")
         orderbook = self.orderbook_manager.get_order_book(asset_id)
 
         if orderbook is None:
@@ -79,7 +76,6 @@ class Channel(DataConsumer):
 
 
     def on_tick_size_change_event(self, asset_id: str, event: TickSizeChange):
-        logger.debug("Channel got tick size change event")
         orderbook = self.orderbook_manager.get_order_book(asset_id)
 
         if orderbook is None:
