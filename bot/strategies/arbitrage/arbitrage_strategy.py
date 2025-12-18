@@ -85,7 +85,9 @@ def check_for_arb(side: Side, order_books: list[OrderBook]):
 
                 best_top_levels.append(Decimal(best_ask))
 
-    return get_top_level_sum(best_top_levels) - 1 != 0
+    total = get_top_level_sum(best_top_levels)
+
+    return total - 1 < 0 if side == Side.BUY else total - 1 > 0
 
 
 def get_top_level_sum(best_top_levels: list[Decimal]) -> Decimal:
