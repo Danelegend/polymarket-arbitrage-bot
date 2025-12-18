@@ -17,7 +17,7 @@ def build_arbitrage_strategy(market: MarketInformation):
 
         asset_identifiers.append(
             AssetIdentifier(
-                market_name=market.name,
+                market_name=market.question,
                 market_outcome=outcome,
                 asset_id=asset_id
             )
