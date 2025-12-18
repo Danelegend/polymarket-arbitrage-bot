@@ -14,6 +14,10 @@ class Side(Enum):
     BUY = "buy"
     SELL = "sell"
 
+FEE_PER_LEG = Decimal("0.0015")     # 0.15% per trade
+SLIPPAGE_BUFFER = Decimal("0.002")  # execution risk
+MIN_EDGE = Decimal("0.001")         # required profit (0.1%)
+
 
 class ArbitrageStrategy(Strategy):
     def __init__(
@@ -80,25 +84,55 @@ def get_market_name(assets: dict[str, AssetIdentifier]) -> str:
     return next(iter(assets.values())).market_name
 
 
-def should_hit_bids(best_bids: list[Decimal], fee: float = 0.0) -> bool:
+def should_hit_bids(
+    best_bids: list[Decimal],
+    fee_per_leg: Decimal = FEE_PER_LEG,
+    slippage_buffer: Decimal = SLIPPAGE_BUFFER,
+    min_edge: Decimal = MIN_EDGE,
+) -> bool:
     """
     Returns True if selling 1 unit of each outcome at the given bids
-    yields risk-free profit.
-
-    best_bids: list of best bid prices (e.g. [yes_bid, no_bid])
-    fee: total fee per unit round-trip (optional)
+    yields guaranteed profit after fees and buffers.
     """
-    return sum(best_bids) > 1 + fee
+    if not best_bids:
+        return False
 
-def should_hit_asks(best_asks: list[Decimal], fee: float = 0.0) -> bool:
-    """
-    Returns True if selling 1 unit of each outcome at the given bids
-    yields risk-free profit.
+    gross_credit = sum(best_bids)
 
-    best_bids: list of best bid prices (e.g. [yes_bid, no_bid])
-    fee: total fee per unit round-trip (optional)
+    # Fees paid on both legs
+    fee_cost = gross_credit * fee_per_leg * Decimal(len(best_bids))
+
+    effective_credit = gross_credit - fee_cost - slippage_buffer
+
+    net_pnl = effective_credit - Decimal("1")
+
+    return net_pnl >= min_edge
+
+
+def should_hit_asks(
+    best_asks: list[Decimal],
+    fee_per_leg: Decimal = FEE_PER_LEG,
+    slippage_buffer: Decimal = SLIPPAGE_BUFFER,
+    min_edge: Decimal = MIN_EDGE,
+) -> bool:
     """
-    return sum(best_asks) < 1 + fee
+    Returns True if buying 1 unit of each outcome at the given asks
+    yields guaranteed profit after fees and buffers.
+    """
+    if not best_asks:
+        return False
+
+    raw_cost = sum(best_asks)
+
+    # Fees paid on both legs
+    fee_cost = raw_cost * fee_per_leg * Decimal(len(best_asks))
+
+    effective_cost = raw_cost + fee_cost + slippage_buffer
+
+    net_pnl = Decimal("1") - effective_cost
+
+    return net_pnl >= min_edge
+
 
 def to_decimal(num: float | None, negative_infinity: bool = False) -> Decimal:
     return Decimal(num) if num is not None else Decimal('-Infinity' if negative_infinity else 'Infinity')
