@@ -100,4 +100,4 @@ class Channel(DataConsumer):
         for strategy_id in self.asset_strategy_map[asset_id]:
             self.strategies[strategy_id].run(asset_id, orderbook)
 
-        logger.info(f"Orderbook updated for asset_id={asset_id}, best_bid={orderbook.get_best_bid()}, best_ask={orderbook.get_best_ask()}")
+        logger.debug(f"Orderbook updated for asset_id={asset_id}, best_bid={orderbook.get_best_bid()}, best_ask={orderbook.get_best_ask()}")
