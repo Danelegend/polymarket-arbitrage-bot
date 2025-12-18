@@ -76,9 +76,11 @@ class PolyMarketWebSocketConnection(ConnectionBase):
             logger.error(traceback.format_exc())
 
     def on_error(self, ws, error):
+        logger.error(f"Websocket error -> {str(error)}")
         return
 
     def on_close(self, ws, close_status_code, close_msg):
+        logger.info("WebSocket closed")
         return
 
     def on_open(self, ws):
