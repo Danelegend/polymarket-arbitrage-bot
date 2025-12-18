@@ -1,37 +1,22 @@
-from bot.common.messages.gamma import GammaMarket, Event
-
 from dataclasses import dataclass
-from typing import TypeVar, FunctionType
+from typing import Callable, Any, Generic, TypeVar
 
-T = TypeVar('T')
-
-@dataclass
-class Condition[T]:
-    artibute: str
-    operator: FunctionType[T, T, bool]
-    value: T
+L = TypeVar("L")  # left-hand side (attribute type)
+R = TypeVar("R")  # right-hand side (comparison value type)
 
 
-def market_valid(market: GammaMarket, conditions: list[Condition[T]]) -> bool:
+@dataclass(frozen=True)
+class Condition(Generic[L, R]):
+    attribute: str
+    operator: Callable[[L, R], bool]
+    value: R
+
+
+def is_valid(obj: Any, conditions: list[Condition[Any, Any]]) -> bool:
     return all(
         condition.operator(
-            getattr(
-                market, 
-                condition.artibute
-            ), 
+            getattr(obj, condition.attribute),
             condition.value
-        ) for condition in conditions
+        )
+        for condition in conditions
     )
-
-def event_valid(event: Event, conditions: list[Condition[T]]) -> bool:
-    return all(
-        condition.operator(
-            getattr(
-                event, 
-                condition.artibute
-            ), 
-            condition.value
-        ) for condition in conditions
-    )
-
-    
