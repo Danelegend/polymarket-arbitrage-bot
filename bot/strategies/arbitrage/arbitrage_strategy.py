@@ -55,8 +55,8 @@ class ArbitrageStrategy(Strategy):
 
         for asset_id, orderbook in self.asset_order_books.items():
             asset_identifier = self.assets[asset_id]
-            string_builder1 += f"{asset_identifier.asset_name}={orderbook.get_best_bid()}, "
-            string_builder2 += f"{asset_identifier.asset_name}={orderbook.get_best_ask()}, "
+            string_builder1 += f"{asset_identifier.market_outcome}={orderbook.get_best_bid()}, "
+            string_builder2 += f"{asset_identifier.market_outcome}={orderbook.get_best_ask()}, "
 
         logger.info(string_builder1)
         logger.info(string_builder2)
