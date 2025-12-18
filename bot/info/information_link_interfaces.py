@@ -23,6 +23,6 @@ class DataConsumer(Protocol):
 
 
 class DataProvider(Protocol):
-    def subscribe_to_data(self, asset_id: str, consumer: DataConsumer):
+    def subscribe_to_data(self, asset_id: int, consumer: DataConsumer):
         ...
 

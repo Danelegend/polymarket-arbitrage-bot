@@ -21,24 +21,24 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
         self.ids_client = ids_client
         
         # asset_id -> list of subscribers
-        self.subscribers: dict[str, list[DataConsumer]] = defaultdict(list)
+        self.subscribers: dict[int, list[DataConsumer]] = defaultdict(list)
         self.polymarket_connection = PolyMarketWebSocketConnection(self)
 
-        self.subscribed_markets: set[str] = set()
+        self.subscribed_markets: set[int] = set()
 
     def start(self):
         self.polymarket_connection.run()
 
-    def subscribe_to_data(self, asset_id: str, consumer: DataConsumer):
+    def subscribe_to_data(self, asset_id: int, consumer: DataConsumer):
         self.subscribers[asset_id].append(consumer)
 
         self._subscribe_to_market(
             self.ids_client.get_market_for_event(
-                int(asset_id)
+                asset_id
             )
         )
         
-    def _subscribe_to_market(self, market_id: str):
+    def _subscribe_to_market(self, market_id: int):
         if market_id in self.subscribed_markets:
             return
 
