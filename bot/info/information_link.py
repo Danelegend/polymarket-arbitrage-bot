@@ -57,7 +57,7 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
 
     def handle_price_change_event(self, event: PriceChangeEvent):
         for pc in event.price_changes:
-            token_id = pc.condition_id
+            token_id = pc.token_id
 
             if token_id not in self.subscribers:
                 continue
