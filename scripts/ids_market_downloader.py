@@ -1,5 +1,6 @@
 from bot.polymarket.gamma_connection import get_markets
 from bot.ids.orchestration import save_market
+from bot.ids.ids_writer import create_market_file
 
 import logging
 
@@ -11,6 +12,7 @@ logging.basicConfig(
 )
 
 def run():
+    create_market_file()
     for market in get_markets():
         save_market(market)
 

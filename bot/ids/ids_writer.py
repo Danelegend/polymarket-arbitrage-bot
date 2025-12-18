@@ -8,11 +8,12 @@ class FileWriter:
         self.file_path = file_path
         self.file = None
 
-        open(self.file_path, "w").close()
-
     def __enter__(self):
         self.file = open(self.file_path, "a")
         return self
+
+    def create_new_file(self):
+        open(self.file_path, "w").close()
 
     def write(self, data: str):
         self.file.write(data + "\n")
@@ -22,6 +23,12 @@ class FileWriter:
 
 MARKET_FILE_WRITER = FileWriter(MARKET_OUTPUT_FILE)
 TRADABLE_MARKETS_FILE_WRITER = FileWriter(TRADABLE_MARKETS_OUTPUT_FILE)
+
+def create_market_file():
+    MARKET_FILE_WRITER.create_new_file()
+
+def create_tradable_markets_file():
+    TRADABLE_MARKETS_FILE_WRITER.create_new_file()
 
 def write_market(market: MarketInformation):
     with MARKET_FILE_WRITER as writer:

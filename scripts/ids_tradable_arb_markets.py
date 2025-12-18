@@ -3,6 +3,7 @@ from datetime import datetime
 from bot.ids.ids_reader import read_markets
 from bot.ids.orchestration import save_market_as_tradable
 from bot.ids.market_selector import market_valid, Condition
+from bot.ids.ids_writer import create_tradable_markets_file
 
 import logging
 
@@ -22,6 +23,7 @@ def run():
     # -> Have a yes and no market
     # -> Have a volume of at least 1M
 
+    create_tradable_markets_file()
     for market in read_markets():
         if market_valid(
             market,
