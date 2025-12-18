@@ -48,12 +48,16 @@ class ArbitrageStrategy(Strategy):
     def _run_strategy(self):
         order_books = list(self.asset_order_books.values())
 
+        run = False
+
         if check_for_arb(Side.BUY, order_books):
+            run = True
             logger.info(
                 f"BUY ARBITRAGE for Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}"
             )
 
         if check_for_arb(Side.SELL, order_books):
+            run = True
             logger.info(f"SELL ARBITRAGE for Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}")
 
         string_builder1 = f"Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}"
@@ -64,8 +68,9 @@ class ArbitrageStrategy(Strategy):
             string_builder1 += f"{asset_identifier.market_outcome}={orderbook.get_best_bid()}, "
             string_builder2 += f"{asset_identifier.market_outcome}={orderbook.get_best_ask()}, "
 
-        logger.info(string_builder1)
-        logger.info(string_builder2)
+        if run:
+            logger.info(string_builder1)
+            logger.info(string_builder2)
 
     def __str__(self) -> str:
         return f"ArbitrageStrategy({self.assets})"
