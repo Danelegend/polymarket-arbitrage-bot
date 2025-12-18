@@ -52,7 +52,7 @@ class ConnectionBase(ABC):
         self.connection_state = ConnectionState.CONNECTED
         self.on_open(ws)
         
-        threading.Thread(target=self._ping, args=(ws,)).start()
+        threading.Thread(target=_ping, args=(ws,)).start()
 
     @abstractmethod
     def on_message(self, ws, message):

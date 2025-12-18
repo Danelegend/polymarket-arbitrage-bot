@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class App:
     def __init__(self):
         self.ids_client = IdsClient()
-        self.info_link = InfoLink(self.ids_client)
+        self.info_link = InfoLink()
         self.channel = Channel(self.info_link)
 
         _build_strategies(

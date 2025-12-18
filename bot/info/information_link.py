@@ -17,9 +17,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class InfoLink(DataProvider, MarketDataHandlerInterface):
-    def __init__(self, ids_client: IdsInterface):
-        self.ids_client = ids_client
-        
+    def __init__(self):
         # asset_id -> list of subscribers
         self.subscribers: dict[int, list[DataConsumer]] = defaultdict(list)
         self.polymarket_connection = PolyMarketWebSocketConnection(self)
