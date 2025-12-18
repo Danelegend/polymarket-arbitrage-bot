@@ -1,20 +1,40 @@
 from bot.ids.ids_client import IdsClient
 from bot.info.information_link import InfoLink
-from bot.orderbook import OrderManager
+from bot.channel import Channel
 
 from bot.strategies.strategy_builder import build_strategies
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 class App:
     def __init__(self):
         self.ids_client = IdsClient()
         self.info_link = InfoLink(self.ids_client)
-        self.order_manager = OrderManager(self.info_link)
+        self.channel = Channel(self.info_link)
 
-        self.strategies = []
-
-    def build_strategies(self):
-        for strategy in build_strategies(self.order_manager):
-            self.strategies.append(strategy)
+        _build_strategies(
+            self.ids_client,
+            self.channel
+        )
 
     def run(self):
+        logger.info("Starting Channel")
+        
         self.info_link.start()
+
+        logger.info("Channel started")
+
+
+def _build_strategies(ids_client: IdsClient, channel: Channel):
+    tradable_markets = ids_client.get_tradable_markets()
+    
+    for strategy in build_strategies(tradable_markets):
+        logger.info(f"Adding strategy {str(strategy)}")
+        channel.add_strategy(strategy)
+    
+
+if __name__ == '__main__':
+    app = App()
+    app.run()

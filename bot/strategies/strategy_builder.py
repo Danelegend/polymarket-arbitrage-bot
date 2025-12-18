@@ -4,26 +4,16 @@ from typing import Generator
 
 from .arbitrage.arbitrage_strategy import ArbitrageStrategy
 
-from bot.orderbook import OrderBookFanoutInterface
-from pydantic import BaseModel
-
-ARBITRAGE_STRATEGY_FILE = "arbitrage_strategies.json"
-
-class ArbitrageStrategyConfig(BaseModel):
-    name: str
-    market_id: str
-    asset_ids: list[int]
+from bot.common.types.ids import MarketInformation
 
 
-def load_arbitrage_strategies() -> Generator[ArbitrageStrategyConfig, None, None]:
-    with open(ARBITRAGE_STRATEGY_FILE, "r") as f:
-        for config in json.load(f):
-            yield ArbitrageStrategyConfig(**config)
+def build_arbitrage_strategy(market: MarketInformation):
+    return ArbitrageStrategy(
+        [str(asset_id) for asset_id in market.asset_ids], 
+    )
 
 
-def build_strategies(order_book_fanout_interface: OrderBookFanoutInterface) -> Generator[ArbitrageStrategy, None, None]:
-    for config in load_arbitrage_strategies():
-        yield ArbitrageStrategy(
-            [str(asset_id) for asset_id in config.asset_ids], 
-            order_book_fanout_interface
-        )
+def build_strategies(tradable_markets: list[MarketInformation]) -> Generator[ArbitrageStrategy, None, None]:
+    for market in tradable_markets:
+        yield build_arbitrage_strategy(market)
+

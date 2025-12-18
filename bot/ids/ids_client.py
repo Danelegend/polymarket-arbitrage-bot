@@ -20,3 +20,9 @@ class IdsClient(IdsInterface):
             if market.id == market_id:
                 return market
 
+
+    def get_tradable_markets(self) -> list[MarketInformation]:
+        tradable_markets = read_tradeable_markets()
+
+        return [self.get_market(market.tradeable_market_id) for market in tradable_markets]
+

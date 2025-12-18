@@ -10,6 +10,10 @@ from bot.common.messages.websocket import (
     LastTradePriceEvent,
 )
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 POLYMARKET_SOCKET_URL = "wss://ws-subscriptions-clob.polymarket.com"
 MARKET_CHANNEL = "market"
 
@@ -78,4 +82,5 @@ class PolyMarketWebSocketConnection(ConnectionBase):
             "assets_ids": list(self.subscribed_markets),
             "type": MARKET_CHANNEL,
         }
+        logger.info(f"Subscribing to markets: {data}")
         self.send_message(data)

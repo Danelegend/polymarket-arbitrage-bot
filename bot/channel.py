@@ -19,15 +19,30 @@ from bot.common.messages.websocket import (
 )
 from bot.orderbook import OrderBook
 
+from collections import defaultdict
 
 class Channel(DataConsumer):
     def __init__(
         self,
         data_provider: DataProvider
     ):
-        self.orderbook_manager = OrderManager(data_provider)
-        self.strategies: list[Strategy] = []
+        self.data_provider = data_provider
 
+        self.orderbook_manager = OrderManager()
+        self.strategies: dict[int, Strategy] = {}
+
+        self.asset_strategy_map: dict[str, list[int]] = defaultdict(list)
+
+    def add_strategy(self, strategy: Strategy):
+        strategy_id = len(self.strategies) + 1
+        self.strategies[strategy_id] = strategy
+
+        for asset in strategy.get_asset_ids():
+            self.asset_strategy_map[asset].append(strategy_id)
+            self.subscribe_to_instrument_updates(asset)
+
+    def subscribe_to_instrument_updates(self, asset_id: str):
+        self.data_provider.subscribe_to_data(asset_id, self)
 
     def on_order_book_summary_event(self, asset_id: str, event: OrderBookSummary):
         orderbook = self.orderbook_manager.get_order_book(asset_id)

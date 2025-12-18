@@ -30,6 +30,9 @@ class ArbitrageStrategy(Strategy):
 
         self._run_strategy()
 
+    def get_asset_ids(self) -> list[str]:
+        return self.assets
+
     def _can_run_strategy(self) -> bool:
         # Check that we have an order book for each asset
         return len(self.assets) == len(self.asset_order_books)
@@ -42,6 +45,10 @@ class ArbitrageStrategy(Strategy):
 
         if check_for_arb(Side.SELL, order_books):
             logger.info(f"SELL ARBITRAGE for {self.assets}")
+
+
+    def __str__(self) -> str:
+        return f"ArbitrageStrategy({self.assets})"
 
 
 def check_for_arb(side: Side, order_books: list[OrderBook]):
