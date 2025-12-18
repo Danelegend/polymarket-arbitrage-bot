@@ -1,4 +1,5 @@
 from bot.common.messages.gamma import GammaMarket
+from bot.common.types.ids import MarketInformation
 
 from .market_selector import market_valid, event_valid 
 from .ids_writer import write_market, write_tradable_market
@@ -16,30 +17,8 @@ def save_market(gamma_market: GammaMarket):
         logger.info(f"Failed to parse market, title={gamma_market.question} e={e}")
         return
 
-def handle_market(gamma_market: GammaMarket):
-    # Save the market to a file
-    try:
-        write_market(parse_market(gamma_market))
-    except Exception as e:
-        logger.info(f"Failed to parse market, title={gamma_market.question} e={e}")
-        return
-
-    # Check what markets and events are valid
-    is_market_valid = market_valid(gamma_market)
-    
-    # If the market is not valid, we do not trade any events
-    if not is_market_valid:
-        return
-
-    valid_events = [
-        event for event in gamma_market.events if event_valid(event)
-    ]
-
-    # Convert to tradeable market
-    tradeable_market = to_tradeable_market(
-        gamma_market, 
-        [parse_event(e) for e in valid_events]
-    )
+def save_market_as_tradable(market: MarketInformation):
+    tradeable_market = to_tradeable_market(market)
 
     # Save the tradeable market to a file
     write_tradable_market(tradeable_market)

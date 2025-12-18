@@ -1,9 +1,11 @@
-from bot.polymarket.gamma_connection import get_markets
-from bot.ids.orchestration import save_market
+from datetime import datetime
+
+from bot.ids.ids_reader import read_markets
+from bot.ids.orchestration import save_market_as_tradable
+from bot.ids.market_selector import market_valid, Condition
 
 import logging
 
-from dataclasses import dataclass
 
 logging.basicConfig(
     filename="ids_runner.log",
@@ -18,10 +20,28 @@ def run():
     # We want to find arb markets that:
     # -> End by Feb 1st 2026
     # -> Have a yes and no market
-    # -> 
+    # -> Have a volume of at least 1M
 
-    for market in get_markets():
-        save_market(market)
+    for market in read_markets():
+        if market_valid(
+            market,
+            [
+                Condition(
+                    attribute="end_date",
+                    predicate=lambda x: x < datetime(2026, 2, 1),
+                ),
+                Condition(
+                    attribute="outcomes",
+                    predicate=lambda x: len(x) == 2 and "Yes" in x and "No" in x,
+                ),
+                Condition(
+                    attribute="volume",
+                    predicate=lambda x: x > 1000000,
+                )
+            ]
+        ):
+
+        save_market_as_tradable(market)
 
 
 if __name__ == '__main__':

@@ -16,9 +16,7 @@ class IdsClient(IdsInterface):
 
 
     def get_market(self, market_id: int) -> MarketInformation:
-        markets = read_markets()
-
-        for market in markets:
+        for market in read_markets():
             if market.id == market_id:
                 return market
 
