@@ -63,7 +63,7 @@ class Channel(DataConsumer):
             bids=[(bid.price, bid.size) for bid in event.bids],
             asks=[(ask.price, ask.size) for ask in event.asks],
             ts=event.timestamp,
-            book_hash=event.book_hash,
+            book_hash=event.hash,
         )
 
         self._on_orderbook_update(asset_id, orderbook)
