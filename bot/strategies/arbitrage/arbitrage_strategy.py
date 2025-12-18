@@ -45,12 +45,14 @@ class ArbitrageStrategy(Strategy):
         order_books = list(self.asset_order_books.values())
 
         if check_for_arb(Side.BUY, order_books):
-            logger.info(f"BUY ARBITRAGE for {self.assets.keys()}")
+            logger.info(
+                f"BUY ARBITRAGE for market={self.assets.keys()}"
+            )
 
         if check_for_arb(Side.SELL, order_books):
             logger.info(f"SELL ARBITRAGE for {self.assets.keys()}")
 
-        string_builder1 = f"Market={next(iter(self.assets.values())).market_name}"
+        string_builder1 = f"Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}"
         string_builder2 = string_builder1
 
         for asset_id, orderbook in self.asset_order_books.items():
@@ -93,3 +95,6 @@ def check_for_arb(side: Side, order_books: list[OrderBook]):
 def get_top_level_sum(best_top_levels: list[Decimal]) -> Decimal:
     return Decimal(sum(best_top_levels))
 
+
+def get_market_name(assets: dict[str, AssetIdentifier]) -> str:
+    return next(iter(assets.values())).market_name
