@@ -30,6 +30,8 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
         self.polymarket_connection.run()
 
     def subscribe_to_data(self, asset_id: int, consumer: DataConsumer):
+        logger.info(f"Subscription request for asset={asset_id}")
+        
         self.subscribers[asset_id].append(consumer)
 
         self._subscribe_to_market(
