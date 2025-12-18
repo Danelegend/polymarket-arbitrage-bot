@@ -18,7 +18,7 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
         
         # asset_id -> list of subscribers
         self.subscribers: dict[str, list[DataConsumer]] = defaultdict(list)
-        self.polymarket_connection = PolyMarketWebSocketConnection()
+        self.polymarket_connection = PolyMarketWebSocketConnection(self)
 
         self.subscribed_markets: set[str] = set()
 
