@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 class InfoLink(DataProvider, MarketDataHandlerInterface):
     def __init__(self):
         # asset_id -> list of subscribers
-        self.subscribers: dict[int, list[DataConsumer]] = defaultdict(list)
+        self.subscribers: dict[str, list[DataConsumer]] = defaultdict(list)
         self.polymarket_connection = PolyMarketWebSocketConnection(self)
 
         self.subscribed_markets: set[int] = set()
@@ -30,7 +30,7 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
     def subscribe_to_data(self, asset_id: int, consumer: DataConsumer):
         logger.info(f"Subscription request for asset={asset_id}")
         
-        self.subscribers[asset_id].append(consumer)
+        self.subscribers[str(asset_id)].append(consumer)
 
         self._subscribe_to_market(
             asset_id
