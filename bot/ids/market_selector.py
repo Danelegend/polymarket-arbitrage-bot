@@ -1,3 +1,5 @@
+from bot.common.messages.gamma import Event
+from bot.common.messages.gamma import GammaMarket
 from dataclasses import dataclass
 from typing import Callable, Any, Generic, TypeVar
 
@@ -20,3 +22,9 @@ def is_valid(obj: Any, conditions: list[Condition[Any, Any]]) -> bool:
         )
         for condition in conditions
     )
+
+def market_valid(market: GammaMarket, conditions: list[Condition[Any, Any]]) -> bool:
+    return is_valid(market, conditions)
+
+def event_valid(event: Event, conditions: list[Condition[Any, Any]]) -> bool:
+    return is_valid(event, conditions)
