@@ -38,8 +38,9 @@ class Channel(DataConsumer):
         self.strategies[strategy_id] = strategy
 
         for asset in strategy.get_asset_ids():
-            self.asset_strategy_map[asset].append(strategy_id)
-            self.subscribe_to_instrument_updates(asset)
+            asset_id = asset.asset_id
+            self.asset_strategy_map[asset_id].append(strategy_id)
+            self.subscribe_to_instrument_updates(asset_id)
 
     def subscribe_to_instrument_updates(self, asset_id: str):
         self.data_provider.subscribe_to_data(asset_id, self)

@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from bot.common.types.common import AssetIdentifier
 from bot.strategies.strategy import Strategy
 from bot.orderbook import OrderBook
 
@@ -17,7 +18,7 @@ class Side(Enum):
 class ArbitrageStrategy(Strategy):
     def __init__(
         self, 
-        asset_ids: list[str],  
+        asset_ids: list[AssetIdentifier],  
     ):
         self.assets = asset_ids
         self.asset_order_books: dict[str, OrderBook] = {}
@@ -30,7 +31,7 @@ class ArbitrageStrategy(Strategy):
 
         self._run_strategy()
 
-    def get_asset_ids(self) -> list[str]:
+    def get_asset_ids(self) -> list[AssetIdentifier]:
         return self.assets
 
     def _can_run_strategy(self) -> bool:

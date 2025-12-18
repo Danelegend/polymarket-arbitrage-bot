@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from bot.common.types.common import AssetIdentifier
 from bot.orderbook import OrderBook
 
 class Strategy(ABC):
@@ -8,7 +9,7 @@ class Strategy(ABC):
         ...
 
     @abstractmethod
-    def get_asset_ids(self) -> list[str]:
+    def get_asset_ids(self) -> list[AssetIdentifier]:
         ...
 
     @abstractmethod
