@@ -21,6 +21,10 @@ from bot.orderbook import OrderBook
 
 from collections import defaultdict
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class Channel(DataConsumer):
     def __init__(
         self,
@@ -43,6 +47,7 @@ class Channel(DataConsumer):
             self.subscribe_to_instrument_updates(asset_id)
 
     def subscribe_to_instrument_updates(self, asset_id: str):
+        logger.info(f"Subscribing to asset={asset_id}")
         self.data_provider.subscribe_to_data(asset_id, self)
 
     def on_order_book_summary_event(self, asset_id: str, event: OrderBookSummary):
