@@ -12,6 +12,10 @@ from bot.ids.ids_interface import IdsInterface
 
 from .information_link_interfaces import DataConsumer, DataProvider
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 class InfoLink(DataProvider, MarketDataHandlerInterface):
     def __init__(self, ids_client: IdsInterface):
         self.ids_client = ids_client
@@ -37,6 +41,8 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
     def _subscribe_to_market(self, market_id: str):
         if market_id in self.subscribed_markets:
             return
+
+        logger.info(f"Subscribing to data for asset={market_id}")
 
         self.subscribed_markets.add(market_id)
         self.polymarket_connection.subscribe_to_market(market_id)
