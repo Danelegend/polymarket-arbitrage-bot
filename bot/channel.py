@@ -42,9 +42,9 @@ class Channel(DataConsumer):
         self.strategies[strategy_id] = strategy
 
         for asset in strategy.get_asset_ids():
-            asset_id = asset.asset_id
+            asset_id = str(asset.asset_id)
             self.asset_strategy_map[asset_id].append(strategy_id)
-            self.add_asset(str(asset_id))
+            self.add_asset(asset_id)
 
     def add_asset(self, asset_id: str):
         self.orderbook_manager.create_order_book(asset_id)
