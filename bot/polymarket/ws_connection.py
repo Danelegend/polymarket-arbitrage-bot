@@ -85,7 +85,7 @@ class PolyMarketWebSocketConnection(ConnectionBase):
 
     def on_open(self, ws):
         data = {
-            "asset_ids": [str(x) for x in list(self.subscribed_markets)[:1]],
+            "assets_ids": [str(x) for x in list(self.subscribed_markets)[:1]],
             "type": MARKET_CHANNEL,
         }
         logger.info(f"Subscribing to markets: {data}")
