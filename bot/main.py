@@ -9,7 +9,7 @@ import logging
 logging.basicConfig(
     filename="arb_runner.log",
     filemode="w",
-    level=logging.DEBUG,
+    level=logging.INFO,
     format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
 )
 

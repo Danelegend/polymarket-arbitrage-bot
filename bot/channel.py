@@ -68,6 +68,7 @@ class Channel(DataConsumer):
         orderbook = self.orderbook_manager.get_order_book(asset_id)
 
         if orderbook is None:
+            logger.info("No order book")
             return
 
         orderbook.apply_price_change(event.best_bid, event.best_ask, timestamp)
