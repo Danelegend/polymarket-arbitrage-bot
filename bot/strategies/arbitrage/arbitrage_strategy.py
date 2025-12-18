@@ -21,7 +21,7 @@ class ArbitrageStrategy(Strategy):
         asset_ids: list[AssetIdentifier],  
     ):
         self.assets: dict[str, AssetIdentifier] = {
-            asset.asset_id: asset
+            str(asset.asset_id): asset
             for asset in asset_ids
         }
         self.asset_order_books: dict[str, OrderBook] = {}
@@ -35,14 +35,14 @@ class ArbitrageStrategy(Strategy):
         self._run_strategy()
 
     def get_asset_ids(self) -> list[AssetIdentifier]:
-        return self.assets.values()
+        return list(self.assets.values())
 
     def _can_run_strategy(self) -> bool:
         # Check that we have an order book for each asset
         return len(self.assets) == len(self.asset_order_books)
 
     def _run_strategy(self):
-        order_books = self.asset_order_books.values()
+        order_books = list(self.asset_order_books.values())
 
         if check_for_arb(Side.BUY, order_books):
             logger.info(f"BUY ARBITRAGE for {self.assets.keys()}")
@@ -66,11 +66,28 @@ class ArbitrageStrategy(Strategy):
 
 
 def check_for_arb(side: Side, order_books: list[OrderBook]):
-    best_top_levels = [order_book.get_best_bid() if side == Side.BUY else order_book.get_best_ask() for order_book in order_books]
+    best_top_levels: list[Decimal] = []
+
+    for orderbook in order_books:
+        match side:
+            case Side.BUY:
+                best_bid = orderbook.get_best_bid()
+
+                if best_bid is None:
+                    return False
+
+                best_top_levels.append(Decimal(best_bid))
+            case Side.SELL:
+                best_ask = orderbook.get_best_ask()
+
+                if best_ask is None:
+                    return False
+
+                best_top_levels.append(Decimal(best_ask))
 
     return get_top_level_sum(best_top_levels) - 1 != 0
 
 
 def get_top_level_sum(best_top_levels: list[Decimal]) -> Decimal:
-    return sum(best_top_levels)
+    return Decimal(sum(best_top_levels))
 

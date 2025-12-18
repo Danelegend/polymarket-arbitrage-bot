@@ -51,7 +51,7 @@ class Channel(DataConsumer):
         self.subscribe_to_instrument_updates(asset_id)
 
     def subscribe_to_instrument_updates(self, asset_id: str):
-        self.data_provider.subscribe_to_data(asset_id, self)
+        self.data_provider.subscribe_to_data(int(asset_id), self)
 
     def on_order_book_summary_event(self, asset_id: str, event: OrderBookSummary):
         orderbook = self.orderbook_manager.get_order_book(asset_id)

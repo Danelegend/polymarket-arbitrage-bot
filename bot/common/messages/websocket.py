@@ -33,8 +33,8 @@ class OrderBookSummary(BaseModel):
     token_id: Optional[str] = Field(None, alias="asset_id")
     timestamp: Optional[datetime] = None
     hash: Optional[str] = None
-    bids: Optional[list[OrderSummary]] = None
-    asks: Optional[list[OrderSummary]] = None
+    bids: list[OrderSummary] = []
+    asks: list[OrderSummary] = []
 
     @field_serializer("bids", "asks")
     def serialize_sizes(self, orders: list[OrderSummary]) -> list[dict]:
