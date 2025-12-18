@@ -12,7 +12,7 @@ logging.basicConfig(
 
 def run():
     for market in get_markets():
-        if len(market.events) >= 2:
+        if market.events is not None and len(market.events) >= 2:
             print("More than 2 events")
         save_market(market)
 
