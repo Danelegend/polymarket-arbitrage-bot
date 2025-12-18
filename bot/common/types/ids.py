@@ -45,6 +45,9 @@ class MarketInformation(BaseModel):
 
     volume: float
 
+    outcomes: list[str]
+    token_ids: list[str]
+
     events: list[EventInformation]
 
 

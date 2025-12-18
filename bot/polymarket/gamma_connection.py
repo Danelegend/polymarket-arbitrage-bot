@@ -33,13 +33,6 @@ def _get_markets(limit: int, offset: int) -> list[GammaMarket]:
     url = build_markets_endpoint(limit, offset)
     markets = get_raw_markets_from_url(url)
 
-    for market in markets:
-        logger.info(market)
-        events = market.get("events", [])
-
-        if len(events) >= 2:
-            print(events)
-
     return [GammaMarket(**market) for market in markets]
 
 def get_markets() -> Generator[GammaMarket, None, None]:

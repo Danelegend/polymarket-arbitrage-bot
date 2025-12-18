@@ -65,7 +65,7 @@ class GammaMarket(BaseModel):
     lower_bound: Optional[str] = Field(None, alias="lowerBound")
     upper_bound: Optional[str] = Field(None, alias="upperBound")
     description: Optional[str] = Field(None, alias="description")
-    outcomes: Optional[str] = Field(None, alias="outcomes")
+    outcomes: Optional[Json[list[str]]] = Field(None, alias="outcomes")
     outcome_prices: Optional[Json[list[float]] | list[float]] = Field(
         None, alias="outcomePrices"
     )

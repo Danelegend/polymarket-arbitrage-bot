@@ -14,6 +14,8 @@ def parse_market(market: GammaMarket) -> MarketInformation:
         active=market.active,
         new=market.new or False,
         volume=0 if market.volume is None else float(market.volume),
+        outcomes=market.outcomes or [],
+        token_ids=market.token_ids or [],
         events=[parse_event(e) for e in market.events],
     )
 
