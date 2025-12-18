@@ -70,7 +70,13 @@ class ArbitrageStrategy(Strategy):
 def check_for_arb(side: Side, order_books: list[OrderBook]):
     spread = spread_cost(side, order_books)
 
-    return spread < 1 if side ==  Side.BUY else spread > 1
+    
+    result =  spread < 1 if side ==  Side.BUY else spread > 1
+
+    logger.info("Spread cost == " + str(spread) + " arb_present=" + str(result))
+
+    return result
+
 
 
 def get_market_name(assets: dict[str, AssetIdentifier]) -> str:
