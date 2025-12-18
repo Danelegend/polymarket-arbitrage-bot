@@ -48,6 +48,8 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
     def handle_order_book_summary_event(self, event: OrderBookSummaryEvent):
         token_id = event.token_id
 
+        logger.debug(f"{token_id in self.subscribers}")
+
         if token_id not in self.subscribers:
             return
 
@@ -58,6 +60,8 @@ class InfoLink(DataProvider, MarketDataHandlerInterface):
     def handle_price_change_event(self, event: PriceChangeEvent):
         for pc in event.price_changes:
             token_id = pc.token_id
+
+            logger.debug(f"{token_id in self.subscribers}")
 
             if token_id not in self.subscribers:
                 continue
