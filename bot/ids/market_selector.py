@@ -21,8 +21,8 @@ def is_valid(obj: Any, conditions: list[Condition[Any]]) -> bool:
         for condition in conditions
     )
 
-def market_valid(market: MarketInformation, conditions: list[Condition[Any, Any]]) -> bool:
+def market_valid(market: MarketInformation, conditions: list[Condition[Any]]) -> bool:
     return is_valid(market, conditions)
 
-def event_valid(event: EventInformation, conditions: list[Condition[Any, Any]]) -> bool:
+def event_valid(event: EventInformation, conditions: list[Condition[Any]]) -> bool:
     return is_valid(event, conditions)
