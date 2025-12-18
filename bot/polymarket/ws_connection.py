@@ -26,18 +26,22 @@ def build_market_url() -> str:
 def _process_market_event(handler: MarketDataHandlerInterface, msg: dict):
     match msg["event_type"]:
         case MessageType.BOOK.value:
+            logger.debug("Processing order book summary event")
             handler.handle_order_book_summary_event(
                 OrderBookSummaryEvent(**msg)
             )
         case MessageType.PRICE_CHANGE.value:
+            logger.debug("Processing price change event")
             handler.handle_price_change_event(
                 PriceChangeEvent(**msg)
             )
         case MessageType.TICK_SIZE_CHANGE.value:
+            logger.debug("Processing tick size change event")
             handler.handle_tick_size_change_event(
                 TickSizeChangeEvent(**msg)
             )
         case MessageType.LAST_TRADE_PRICE.value:
+            logger.debug("Processing last trade price event")
             handler.handle_last_trade_price_event(
                 LastTradePriceEvent(**msg)
             )
