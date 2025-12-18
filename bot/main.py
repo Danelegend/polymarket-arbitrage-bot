@@ -6,7 +6,15 @@ from bot.strategies.strategy_builder import build_strategies
 
 import logging
 
+logging.basicConfig(
+    filename="arb_runner.log",
+    filemode="w",
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+)
+
 logger = logging.getLogger(__name__)
+
 
 class App:
     def __init__(self):
