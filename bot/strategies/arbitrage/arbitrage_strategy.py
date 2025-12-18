@@ -46,11 +46,11 @@ class ArbitrageStrategy(Strategy):
 
         if check_for_arb(Side.BUY, order_books):
             logger.info(
-                f"BUY ARBITRAGE for market={self.assets.keys()}"
+                f"BUY ARBITRAGE for Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}"
             )
 
         if check_for_arb(Side.SELL, order_books):
-            logger.info(f"SELL ARBITRAGE for {self.assets.keys()}")
+            logger.info(f"SELL ARBITRAGE for Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}")
 
         string_builder1 = f"Market={get_market_name(self.assets)}, assets={list(self.assets.keys())}"
         string_builder2 = string_builder1
@@ -73,19 +73,19 @@ def check_for_arb(side: Side, order_books: list[OrderBook]):
     for orderbook in order_books:
         match side:
             case Side.BUY:
-                best_bid = orderbook.get_best_bid()
-
-                if best_bid is None:
-                    return False
-
-                best_top_levels.append(Decimal(best_bid))
-            case Side.SELL:
                 best_ask = orderbook.get_best_ask()
 
                 if best_ask is None:
                     return False
 
                 best_top_levels.append(Decimal(best_ask))
+            case Side.SELL:
+                best_bid = orderbook.get_best_bid()
+
+                if best_bid is None:
+                    return False
+
+                best_top_levels.append(Decimal(best_bid))
 
     total = get_top_level_sum(best_top_levels)
 
