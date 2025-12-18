@@ -68,36 +68,37 @@ class ArbitrageStrategy(Strategy):
 
 
 def check_for_arb(side: Side, order_books: list[OrderBook]):
-    spread = spread_cost(side, order_books)
-
-    
-    result =  spread < 1 if side ==  Side.BUY else spread > 1
-
-    logger.info("Spread cost == " + str(spread) + " arb_present=" + str(result))
-
-    return result
+    return (
+        should_hit_bids([to_decimal(ob.get_best_bid()) for ob in order_books]) 
+        if side == Side.BUY else
+        should_hit_asks([to_decimal(ob.get_best_ask()) for ob in order_books])
+    )
 
 
 
 def get_market_name(assets: dict[str, AssetIdentifier]) -> str:
     return next(iter(assets.values())).market_name
 
-def spread_cost(side: Side, orderbooks: list[OrderBook]) -> Decimal:
-    total = Decimal(0)
-    
-    for orderbook in orderbooks:
-        match side:
-            case Side.BUY:
-                ask = orderbook.get_best_ask()
 
-                if ask is None: return Decimal('Infinity')
-                
-                total += Decimal(ask)
-            case Side.SELL:
-                buy = orderbook.get_best_bid()
+def should_hit_bids(best_bids: list[Decimal], fee: float = 0.0) -> bool:
+    """
+    Returns True if selling 1 unit of each outcome at the given bids
+    yields risk-free profit.
 
-                if buy is None: return Decimal('-Infinity')
-                
-                total += Decimal(buy)
-    
-    return total
+    best_bids: list of best bid prices (e.g. [yes_bid, no_bid])
+    fee: total fee per unit round-trip (optional)
+    """
+    return sum(best_bids) > 1 + fee
+
+def should_hit_asks(best_asks: list[Decimal], fee: float = 0.0) -> bool:
+    """
+    Returns True if selling 1 unit of each outcome at the given bids
+    yields risk-free profit.
+
+    best_bids: list of best bid prices (e.g. [yes_bid, no_bid])
+    fee: total fee per unit round-trip (optional)
+    """
+    return sum(best_asks) < 1 + fee
+
+def to_decimal(num: float | None) -> Decimal:
+    return Decimal(num) if num is not None else Decimal('Infinity')
