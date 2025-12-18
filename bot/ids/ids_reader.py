@@ -5,7 +5,8 @@ from .constants import MARKET_OUTPUT_FILE, TRADABLE_MARKETS_OUTPUT_FILE
 
 def read_markets() -> Generator[MarketInformation, None, None]:
     with open(MARKET_OUTPUT_FILE, 'r') as f:
-        yield MarketInformation(**line) for line in f
+        for line in f:
+            yield MarketInformation(**line) 
 
 def read_tradeable_markets() -> list[TradeableMarket]:
     with open(TRADABLE_MARKETS_OUTPUT_FILE, 'r') as f:
