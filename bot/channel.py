@@ -44,7 +44,11 @@ class Channel(DataConsumer):
         for asset in strategy.get_asset_ids():
             asset_id = asset.asset_id
             self.asset_strategy_map[asset_id].append(strategy_id)
-            self.subscribe_to_instrument_updates(asset_id)
+            self.add_asset(asset_id)
+
+    def add_asset(self, asset_id: str):
+        self.orderbook_manager.create_order_book(asset_id)
+        self.subscribe_to_instrument_updates(asset_id)
 
     def subscribe_to_instrument_updates(self, asset_id: str):
         self.data_provider.subscribe_to_data(asset_id, self)
@@ -68,7 +72,6 @@ class Channel(DataConsumer):
         orderbook = self.orderbook_manager.get_order_book(asset_id)
 
         if orderbook is None:
-            logger.info("No order book")
             return
 
         orderbook.apply_price_change(event.best_bid, event.best_ask, timestamp)
