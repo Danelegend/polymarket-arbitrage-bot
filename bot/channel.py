@@ -96,3 +96,5 @@ class Channel(DataConsumer):
     def _on_orderbook_update(self, asset_id: str, orderbook: OrderBook):
         for strategy in self.strategies:
             strategy.run(asset_id, orderbook)
+
+        logger.info(f"Orderbook updated for asset_id={asset_id}, best_bid={orderbook.get_best_bid()}, best_ask={orderbook.get_best_ask()}")
