@@ -37,9 +37,9 @@ def parse_event(event: Event) -> EventInformation:
     )
 
 def to_tradeable_market(market: MarketInformation) -> TradeableMarket:
-    return to_tradeable_market(market, market.events)
+    return to_tradeable_market_and_events(market, market.events)
 
-def to_tradeable_market(market: MarketInformation, tradeable_events: list[EventInformation]) -> TradeableMarket:
+def to_tradeable_market_and_events(market: MarketInformation, tradeable_events: list[EventInformation]) -> TradeableMarket:
     return TradeableMarket(
         tradeable_market_id=market.id,
         tradeable_events=[e.id for e in tradeable_events],
