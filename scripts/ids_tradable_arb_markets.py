@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from bot.ids.ids_reader import read_markets
 from bot.ids.orchestration import save_market_as_tradable
@@ -32,7 +32,7 @@ def run():
             [
                 Condition(
                     attribute="end_date",
-                    predicate=lambda x: x < datetime(2026, 2, 1),
+                    predicate=lambda x: x < datetime(2026, 2, 1, tzinfo=timezone.utc),
                 ),
                 Condition(
                     attribute="outcomes",
