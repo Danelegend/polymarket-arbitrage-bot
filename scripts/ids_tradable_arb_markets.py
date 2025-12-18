@@ -40,8 +40,7 @@ def run():
                 )
             ]
         ):
-
-        save_market_as_tradable(market)
+            save_market_as_tradable(market)
 
 
 if __name__ == '__main__':
