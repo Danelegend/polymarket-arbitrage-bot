@@ -20,7 +20,10 @@ class ArbitrageStrategy(Strategy):
         self, 
         asset_ids: list[AssetIdentifier],  
     ):
-        self.assets = asset_ids
+        self.assets: dict[str, AssetIdentifier] = {
+            asset.asset_id: asset
+            for asset in asset_ids
+        }
         self.asset_order_books: dict[str, OrderBook] = {}
 
     def run(self, asset_id: str, order_book: OrderBook):
@@ -32,7 +35,7 @@ class ArbitrageStrategy(Strategy):
         self._run_strategy()
 
     def get_asset_ids(self) -> list[AssetIdentifier]:
-        return self.assets
+        return self.assets.values()
 
     def _can_run_strategy(self) -> bool:
         # Check that we have an order book for each asset
@@ -42,11 +45,21 @@ class ArbitrageStrategy(Strategy):
         order_books = self.asset_order_books.values()
 
         if check_for_arb(Side.BUY, order_books):
-            logger.info(f"BUY ARBITRAGE for {self.assets}")
+            logger.info(f"BUY ARBITRAGE for {self.assets.keys()}")
 
         if check_for_arb(Side.SELL, order_books):
-            logger.info(f"SELL ARBITRAGE for {self.assets}")
+            logger.info(f"SELL ARBITRAGE for {self.assets.keys()}")
 
+        string_builder1 = f"Market={self.assets.values()[0].market_name}"
+        string_builder2 = string_builder1
+
+        for asset_id, orderbook in self.asset_order_books.items():
+            asset_identifier = self.assets[asset_id]
+            string_builder1 += f"{asset_identifier.asset_name}={orderbook.get_best_bid()}, "
+            string_builder2 += f"{asset_identifier.asset_name}={orderbook.get_best_ask()}, "
+
+        logger.info(string_builder1)
+        logger.info(string_builder2)
 
     def __str__(self) -> str:
         return f"ArbitrageStrategy({self.assets})"
