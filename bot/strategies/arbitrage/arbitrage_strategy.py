@@ -69,7 +69,7 @@ class ArbitrageStrategy(Strategy):
 
 def check_for_arb(side: Side, order_books: list[OrderBook]):
     return (
-        should_hit_bids([to_decimal(ob.get_best_bid()) for ob in order_books]) 
+        should_hit_bids([to_decimal(ob.get_best_bid(), negative_infinity=True) for ob in order_books]) 
         if side == Side.BUY else
         should_hit_asks([to_decimal(ob.get_best_ask()) for ob in order_books])
     )
@@ -100,5 +100,5 @@ def should_hit_asks(best_asks: list[Decimal], fee: float = 0.0) -> bool:
     """
     return sum(best_asks) < 1 + fee
 
-def to_decimal(num: float | None) -> Decimal:
-    return Decimal(num) if num is not None else Decimal('Infinity')
+def to_decimal(num: float | None, negative_infinity: bool = False) -> Decimal:
+    return Decimal(num) if num is not None else Decimal('-Infinity' if negative_infinity else 'Infinity')
