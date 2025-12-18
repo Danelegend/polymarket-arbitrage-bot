@@ -24,6 +24,8 @@ def run():
     # -> Have a volume of at least 1M
 
     create_tradable_markets_file()
+
+    count = 0
     for market in read_markets():
         if market_valid(
             market,
@@ -43,6 +45,9 @@ def run():
             ]
         ):
             save_market_as_tradable(market)
+            count += 1
+
+    print(f"Found {count} tradable markets")
 
 
 if __name__ == '__main__':
