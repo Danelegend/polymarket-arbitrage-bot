@@ -25,7 +25,7 @@ class ConnectionBase(ABC):
             on_close=self._on_close
         )
 
-        self.state = ConnectionState.INITIALIZED
+        self.connection_state = ConnectionState.INITIALIZED
         self.num_messages_received = 0
 
     def _on_message(self, ws, message):
