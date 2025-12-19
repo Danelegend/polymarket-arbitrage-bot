@@ -102,6 +102,10 @@ def should_hit_bids(
     if not best_bids:
         return False
 
+    # Reject non-finite prices immediately
+    if any(not b.is_finite() or b <= 0 for b in best_bids):
+        return False
+
     gross_credit = sum(best_bids)
 
     # Fees paid on both legs
@@ -125,6 +129,10 @@ def should_hit_asks(
     yields guaranteed profit after fees and buffers.
     """
     if not best_asks:
+        return False
+
+    # Reject non-finite prices immediately
+    if any(not a.is_finite() or a <= 0 for a in best_asks):
         return False
 
     raw_cost = sum(best_asks)
